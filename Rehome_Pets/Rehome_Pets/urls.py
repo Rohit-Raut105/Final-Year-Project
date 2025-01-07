@@ -22,5 +22,7 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.register,name='homepage'),
-    path('login/',views.loginUser,name='loginho'),
-]
+    path('login/',views.loginUser,name='login'),
+    path('OTP/',views.OTP,name='otp'),
+    path('home/',views.home,name='home')
+    ]
