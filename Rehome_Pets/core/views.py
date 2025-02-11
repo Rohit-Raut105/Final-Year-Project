@@ -43,7 +43,7 @@ def register(request):
                     print(otp)
                     request.session['ottp'] = otp
                     request.session['email'] = Email
-                    subject = "OTP for your ClassSphere Login"
+                    subject = "OTP for your Rehome Pets Login"
                     message = f"Dear User, {otp} is your OTP for RehomePets. For security reasons, do not share it with others. Best regards, ClassSphere."
                     from_email = settings.EMAIL_HOST_USER
                     recipient_list = [Email]
@@ -57,22 +57,25 @@ def register(request):
     return render(request,'register.html')
 
 def loginUser(request):
-    if request.method=='POST':
-        username=request.POST['username']
-        password=request.POST['password']
-        Flag=authenticate(username=username,password=password)
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        Flag = authenticate(request, username=username, password=password)  # FIXED
+        
         if Flag is not None:
-            login(request,Flag)
-            return redirect('home')
-        else:print('milena')
-    return render(request,'login.html')
+            login(request, Flag)
+            return redirect('home')  # Redirects to 'home' after successful login
+        else:
+            messages.error(request, "Invalid username or password")  # Pass error message
+
+    return render(request, 'login.html')
 
 def OTP(request):
     if request.method == 'POST':
         entered_otp = request.POST.get('OTPentered')
         sent_otp = request.session.get('ottp')
         user_data = request.session.get('user_data')
-
         if not user_data:
             messages.error(request, "Session expired! Please register again.")
             return redirect('register')
@@ -92,7 +95,7 @@ def OTP(request):
                     password=password
                 )
                 messages.success(request, "Registration successful! Please log in.")
-                request.session.flush()
+                request.sessionI.flush()
                 return redirect('login')  
             except Exception as e:
                 messages.error(request, f"Error creating user: {e}")
